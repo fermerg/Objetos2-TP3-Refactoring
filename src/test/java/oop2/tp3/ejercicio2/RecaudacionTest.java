@@ -15,7 +15,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<>();
         options.put("company_name", "Facebook");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 7);
+        assertEquals(recaudacion.where(options).size(), 7);
     }
 
     @Test
@@ -23,7 +23,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<String, String>();
         options.put("city", "Tempe");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 3);
+        assertEquals(recaudacion.where(options).size(), 3);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<String, String>();
         options.put("state", "CA");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 873);
+        assertEquals(recaudacion.where(options).size(), 873);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<String, String>();
         options.put("round", "a");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 582);
+        assertEquals(recaudacion.where(options).size(), 582);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class RecaudacionTest {
         Map<String, String> options = new HashMap<String, String>();
         options.put("round", "a");
         options.put("company_name", "Facebook");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 1);
+        assertEquals(recaudacion.where(options).size(), 1);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<String, String>();
         options.put("company_name", "NotFacebook");
-        assertEquals(recaudacion.filtrarDatos(options).size(), 0);
+        assertEquals(recaudacion.where(options).size(), 0);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class RecaudacionTest {
         Recaudacion recaudacion = new Recaudacion();
         Map<String, String> options = new HashMap<String, String>();
         options.put("company_name", "Facebook");
-        Map<String, String> row = recaudacion.filtrarDatos(options).get(0);
+        Map<String, String> row = recaudacion.where(options).get(0);
 
         assertEquals(row.get("permalink"), "facebook");
         assertEquals(row.get("company_name"), "Facebook");

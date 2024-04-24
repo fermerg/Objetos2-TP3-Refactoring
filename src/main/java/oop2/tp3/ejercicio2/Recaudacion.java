@@ -1,79 +1,77 @@
 package oop2.tp3.ejercicio2;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class Recaudacion {
-    public static final int PERMALINK_INDEX = 0;
-    public static final int COMPANY_NAME_INDEX = 1;
-    public static final int NUMBER_EMPLOYEES_INDEX = 2;
-    public static final int CATEGORY_INDEX = 3;
-    public static final int CITY_INDEX = 4;
-    public static final int STATE_INDEX = 5;
-    public static final int FUNDED_DATE_INDEX = 6;
-    public static final int RAISED_AMOUNT_INDEX = 7;
-    public static final int RAISED_CURRENCY_INDEX = 8;
-    public static final int ROUND_INDEX = 9;
+
+    public static final String COMPANY_NAME = "company_name";
+    public static final String CITY = "city";
+    public static final String STATE = "state";
+    public static final String ROUND = "round";
     private final CsvReader csvReader;
+    private List<String[]> data;
 
     public Recaudacion() {
-        this.csvReader = new CsvReader();
+        this.csvReader = new CsvReader("src/main/resources/data.csv");
     }
 
-    private static List<String[]> filterByOption(List<String[]> datosCSV, int indice, String valor) {
-        List<String[]> datosFiltrados = new ArrayList<>();
-
-        for (String[] datosCsv : datosCSV) {
-            if (datosCsv[indice].equals(valor)) {
-                datosFiltrados.add(datosCsv);
-            }
-        }
-        return datosFiltrados;
-    }
-
-    private static List<Map<String, String>> getMaps(List<String[]> datosCSV) {
+    private static List<Map<String, String>> transformToListOfHashMap(List<String[]> datosCSV) {
         List<Map<String, String>> output = new ArrayList<>();
 
         for (String[] datoCsv : datosCSV) {
             Map<String, String> mapeado = new HashMap<String, String>();
-            mapeado.put("permalink", datoCsv[PERMALINK_INDEX]);
-            mapeado.put("company_name", datoCsv[COMPANY_NAME_INDEX]);
-            mapeado.put("number_employees", datoCsv[NUMBER_EMPLOYEES_INDEX]);
-            mapeado.put("category", datoCsv[CATEGORY_INDEX]);
-            mapeado.put("city", datoCsv[CITY_INDEX]);
-            mapeado.put("state", datoCsv[STATE_INDEX]);
-            mapeado.put("funded_date", datoCsv[FUNDED_DATE_INDEX]);
-            mapeado.put("raised_amount", datoCsv[RAISED_AMOUNT_INDEX]);
-            mapeado.put("raised_currency", datoCsv[RAISED_CURRENCY_INDEX]);
-            mapeado.put("round", datoCsv[ROUND_INDEX]);
+            mapeado.put("permalink", datoCsv[0]);
+            mapeado.put(COMPANY_NAME, datoCsv[1]);
+            mapeado.put("number_employees", datoCsv[2]);
+            mapeado.put("category", datoCsv[3]);
+            mapeado.put(CITY, datoCsv[4]);
+            mapeado.put(STATE, datoCsv[5]);
+            mapeado.put("funded_date", datoCsv[6]);
+            mapeado.put("raised_amount", datoCsv[7]);
+            mapeado.put("raised_currency", datoCsv[8]);
+            mapeado.put(ROUND, datoCsv[9]);
             output.add(mapeado);
         }
         return output;
     }
 
-    public List<Map<String, String>> filtrarDatos(Map<String, String> options) {
+    private List<String[]> filter(Predicate<String[]> predicate) {
+        List<String[]> datosFiltrados = new ArrayList<>();
 
-        List<String[]> datosCSV = this.csvReader.cargarDatosCSV();
+        for (String[] fila : data) {
+            if (predicate.test(fila)) {
+                datosFiltrados.add(fila);
+            }
+        }
+        return datosFiltrados;
+    }
+
+    public List<Map<String, String>> where(Map<String, String> options) {
+
+        data = this.csvReader.cargarDatosCSV();
 
 
-        if (options.containsKey("company_name")) {
-            datosCSV = filterByOption(datosCSV, COMPANY_NAME_INDEX, options.get("company_name"));
+        if (options.containsKey(COMPANY_NAME)) {
+            data = filter((fila) -> fila[1].equals(options.get(COMPANY_NAME)));
         }
 
-        if (options.containsKey("city")) {
-            datosCSV = filterByOption(datosCSV, CITY_INDEX, options.get("city"));
+        if (options.containsKey(CITY)) {
+            data = filter((fila) -> fila[4].equals(options.get(CITY)));
         }
 
-        if (options.containsKey("state")) {
-            datosCSV = filterByOption(datosCSV, STATE_INDEX, options.get("state"));
+        if (options.containsKey(STATE)) {
+            data = filter((fila) -> fila[5].equals(options.get(STATE)));
         }
 
-        if (options.containsKey("round")) {
-            datosCSV = filterByOption(datosCSV, ROUND_INDEX, options.get("round"));
+        if (options.containsKey(ROUND)) {
+            data = filter((fila) -> fila[9].equals(options.get(ROUND)));
         }
 
-        return getMaps(datosCSV);
+        return transformToListOfHashMap(data);
     }
 }
 
